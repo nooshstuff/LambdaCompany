@@ -1,0 +1,34 @@
+﻿<Project Sdk="LethalCompany.Plugin.SDK/1.1.0-rc.10">
+
+	<PropertyGroup>
+		<Title>Lambda Company</Title>
+		<Description>Half Life 2 based mod</Description>
+		<PluginId>ca.noosh.lambdacompany</PluginId>
+		<Version>1.0.0</Version>
+		<PackageReadMeFile>..\README.md</PackageReadMeFile>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\.editorconfig" Link=".editorconfig" />
+		<None Include="LambdaCompany.csproj.user" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="NicholaScott.BepInEx.RuntimeNetcodeRPCValidator" Version="0.2.5" PrivateAssets="all" />
+		<ThunderDependency Include="Ozone-Runtime_Netcode_Patcher-0.2.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="MMHOOK_Assembly-CSharp">
+			<HintPath>..\..\vs_includes\MMHOOK_Assembly-CSharp.dll</HintPath>
+		</Reference>
+	</ItemGroup>
+
+	<Target Name="IncludeBundle" BeforeTargets="PreBuildEvent" Condition="true">
+		<MakeDir Directories="$(TargetDir)publish" Condition="!Exists('$(TargetDir)publish')" />
+		<Exec Command="cp $(SolutionDir)AssetBundles/lambdacompany $(TargetDir)publish/" />
+	</Target>
+</Project>

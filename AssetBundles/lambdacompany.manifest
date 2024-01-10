@@ -1,0 +1,77 @@
+ManifestFileVersion: 0
+CRC: 635707352
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: b29a000249bf6cbaee34a08d46928488
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 913270d18684884d42683ccd66429c55
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: b29a000249bf6cbaee34a08d46928488
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 82
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 04f75356a7e9c978bddc7d568e58a50b, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: c30496d6ae6d6f907456e10a94e01ec6, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3c36d0a92cbb1f26a39169ef0eae393a, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3d0cf24d2ccc3b7eab72048d0f57c437, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f19d9143a39eb3b46bc4563e9889cfbd, type: 3}
+- Class: 114
+  Script: {fileID: -424001087, guid: d4afbad6d3cd56d46b12bdb7d7bd4926, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: Battery
+- AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
+  ClassName: UnityEngine.Rendering.HighDefinition.BoolScalableSettingValue
+- AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
+  ClassName: UnityEngine.Rendering.HighDefinition.IntScalableSettingValue
+Assets:
+- Assets/Scrap/Gnome/GnomeScrap.prefab
+- Assets/Scrap/Gnome/GnomeScrap.asset
+- Assets/Scrap/ExplosiveBarrel/ExplosiveBarrelScrap.prefab
+- Assets/Scrap/ExplosiveBarrel/ExplosiveBarrelScrap.asset
+- Assets/Scrap/Lantern/LanternScrap.prefab
+- Assets/Scrap/Doll/DollScrap.prefab
+- Assets/Scrap/Doll/DollScrap.asset
+- Assets/Scrap/Lantern/LanternScrap.asset
+Dependencies: []
