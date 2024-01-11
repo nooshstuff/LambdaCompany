@@ -2,9 +2,13 @@
 
 	<PropertyGroup>
 		<Title>Lambda Company</Title>
-		<Description>Half Life 2 based mod</Description>
 		<PluginId>ca.noosh.lambdacompany</PluginId>
-		<Version>1.0.0</Version>
+		<!-- THUNDERSTORE -->
+		<Description>Half Life 2 based mod</Description>
+		<Version>1.0.2</Version>
+		<ThunderId>LambdaCompany</ThunderId>
+		<ThunderWebsiteUrl>https://github.com/nooshstuff/LambdaCompany</ThunderWebsiteUrl>
+		<!-- MISC -->
 		<PackageReadMeFile>..\README.md</PackageReadMeFile>
 		<TargetFramework>netstandard2.1</TargetFramework>
 		<Nullable>enable</Nullable>
@@ -17,18 +21,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NicholaScott.BepInEx.RuntimeNetcodeRPCValidator" Version="0.2.5" PrivateAssets="all" />
-		<ThunderDependency Include="Ozone-Runtime_Netcode_Patcher-0.2.2" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Reference Include="MMHOOK_Assembly-CSharp">
 			<HintPath>..\..\vs_includes\MMHOOK_Assembly-CSharp.dll</HintPath>
 		</Reference>
+		<ThunderDependency Include="Evaisa-HookGenPatcher-0.0.5"/>
 	</ItemGroup>
 
 	<Target Name="IncludeBundle" BeforeTargets="PreBuildEvent" Condition="true">
 		<MakeDir Directories="$(TargetDir)publish" Condition="!Exists('$(TargetDir)publish')" />
 		<Exec Command="cp $(SolutionDir)AssetBundles/lambdacompany $(TargetDir)publish/" />
+	</Target>
+
+	<Target Name="NetcodePatch" AfterTargets="PostBuildEvent">
+		<Exec Command="netcode-patch &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')"/>
 	</Target>
 </Project>

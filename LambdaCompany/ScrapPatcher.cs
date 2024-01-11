@@ -1,38 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Unity.Netcode;
-using UnityEngine;
-// #pragma warning disable CS8602 // Dereference of a possibly null reference.
-
-namespace LambdaCompany
+﻿namespace LambdaCompany
 {
 	public static class ScrapPatcher
 	{
 		internal static Dictionary<string, ScrapEntry> scrapCatelog = new Dictionary<string, ScrapEntry>();
-		internal static List<ScrapEntry> _scrapItems;
 		internal static List<string> _easyBlacklist = ["ExperimentationLevel", "AssuranceLevel", "VowLevel"];
 		public static void Activate()
 		{
-			_scrapItems = [];
-
-			_scrapItems.AddRange(scrapCatelog.Values);
 			//Activate Patches for Scrap Items
-			On.GameNetworkManager.Start += GameNetworkManager_Start;
 			On.StartOfRound.Awake += StartOfRound_Awake;
+			// TODO: fix audio mixer groups https://github.com/EvaisaDev/LethalLib/blob/main/LethalLib/Modules/Utilities.cs
 		}
 
 		public static ScrapEntry GetEntry(string item)
 		{
 			return scrapCatelog[item];
-		}
-
-		private static void GameNetworkManager_Start(On.GameNetworkManager.orig_Start orig, GameNetworkManager self)
-		{
-			foreach (ScrapEntry scrap in _scrapItems)
-			{
-				self.GetComponent<NetworkManager>().AddNetworkPrefab(scrap.item.spawnPrefab);
-			}
 		}
 
 		private static void StartOfRound_Awake(On.StartOfRound.orig_Awake orig, StartOfRound self)
@@ -41,7 +22,7 @@ namespace LambdaCompany
 
 			foreach (SelectableLevel level in self.levels)
 			{
-				foreach (ScrapEntry scrap in _scrapItems)
+				foreach (ScrapEntry scrap in scrapCatelog.Values)
 				{
 					if (level.spawnableScrap.Any(x => x.spawnableItem == scrap.item)) continue;
 					if (scrap.levelBlacklist == null) continue;
@@ -51,7 +32,7 @@ namespace LambdaCompany
 				}
 			}
 
-			foreach (ScrapEntry scrap in _scrapItems)
+			foreach (ScrapEntry scrap in scrapCatelog.Values)
 			{
 				if (!self.allItemsList.itemsList.Contains(scrap.item))
 				{

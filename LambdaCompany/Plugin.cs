@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using RuntimeNetcodeRPCValidator;
+﻿using System.Reflection;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,18 +9,15 @@ namespace LambdaCompany
 	{
 		internal static AssetBundle assets;
 		internal static Plugin Instance;
-		private NetcodeValidator netValidator;
+
 		private void Awake()
 		{
 			if (Instance == null) { Instance = this; }
-			Assembly assembly = Assembly.GetExecutingAssembly();
 
-			netValidator = new NetcodeValidator(GeneratedPluginInfo.Identifier);
-			netValidator.PatchAll();
-
-			assets = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(assembly.Location), "lambdacompany"));
+			assets = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lambdacompany"));
 
 			Scrap();
+			NetPatcher.Patch();
 
 			Logger.LogInfo($"Plugin {GeneratedPluginInfo.Identifier} is loaded!");
 		}
@@ -55,16 +50,10 @@ namespace LambdaCompany
 			}
 			return true;
 		}
+
 		public static void Log(object data, BepInEx.Logging.LogLevel lvl = BepInEx.Logging.LogLevel.Info)
 		{
 			if (Instance != null) Instance.Logger.Log(lvl, data);
 		}
-		private void OnDestroy()
-		{
-			if (netValidator == null) return;
-			netValidator.Dispose();
-		}
 	}
-
-
 }
