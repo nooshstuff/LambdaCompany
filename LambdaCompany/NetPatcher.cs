@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonoMod.Cil;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,6 +24,7 @@ namespace LambdaCompany
 
 		private static void GameNetworkManager_Start(On.GameNetworkManager.orig_Start orig, GameNetworkManager self)
 		{
+			orig(self);
 			foreach (GameObject obj in netPrefabs)
 			{
 				if (!NetworkManager.Singleton.NetworkConfig.Prefabs.Contains(obj)) NetworkManager.Singleton.AddNetworkPrefab(obj);

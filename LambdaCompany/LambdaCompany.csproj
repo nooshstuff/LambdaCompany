@@ -5,7 +5,7 @@
 		<PluginId>ca.noosh.lambdacompany</PluginId>
 		<!-- THUNDERSTORE -->
 		<Description>Half Life 2 based mod</Description>
-		<Version>1.0.2</Version>
+		<Version>0.0.5</Version>
 		<ThunderId>LambdaCompany</ThunderId>
 		<ThunderWebsiteUrl>https://github.com/nooshstuff/LambdaCompany</ThunderWebsiteUrl>
 		<!-- MISC -->
@@ -15,6 +15,17 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
+	<Target Name="Precedence" BeforeTargets="BeforeCompile">
+		<PropertyGroup>
+			<DebugType>portable</DebugType>
+			<DebugSymbols>true</DebugSymbols>
+			<IncludeSymbols>true</IncludeSymbols>
+			<!--
+			<Optimize>false</Optimize>
+			-->
+		</PropertyGroup>
+	</Target>
+
 	<ItemGroup>
 		<None Include="..\..\.editorconfig" Link=".editorconfig" />
 		<None Include="LambdaCompany.csproj.user" />
@@ -23,8 +34,9 @@
 	<ItemGroup>
 		<Reference Include="MMHOOK_Assembly-CSharp">
 			<HintPath>..\..\vs_includes\MMHOOK_Assembly-CSharp.dll</HintPath>
+			<Private>false</Private>
 		</Reference>
-		<ThunderDependency Include="Evaisa-HookGenPatcher-0.0.5"/>
+		<ThunderDependency Include="Evaisa-HookGenPatcher-0.0.5" />
 	</ItemGroup>
 
 	<Target Name="IncludeBundle" BeforeTargets="PreBuildEvent" Condition="true">
@@ -33,6 +45,6 @@
 	</Target>
 
 	<Target Name="NetcodePatch" AfterTargets="PostBuildEvent">
-		<Exec Command="netcode-patch &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')"/>
-	</Target>
+		<Exec Command="netcode-patch &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')" />
+	</Target>  
 </Project>
