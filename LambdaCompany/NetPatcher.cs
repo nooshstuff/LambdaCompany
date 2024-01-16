@@ -1,11 +1,7 @@
-﻿using MonoMod.Cil;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 using Unity.Netcode;
 using UnityEngine;
+using LogLevel = BepInEx.Logging.LogLevel;
 
 namespace LambdaCompany
 {
@@ -27,30 +23,51 @@ namespace LambdaCompany
 			orig(self);
 			foreach (GameObject obj in netPrefabs)
 			{
-				if (!NetworkManager.Singleton.NetworkConfig.Prefabs.Contains(obj)) NetworkManager.Singleton.AddNetworkPrefab(obj);
+				try {
+					if (!NetworkManager.Singleton.NetworkConfig.Prefabs.Contains(obj))
+					{
+						NetworkManager.Singleton.AddNetworkPrefab(obj);
+						P.Log($"Added prefab {obj.name}");
+					}
+				}
+				catch(Exception e)
+				{
+					P.Log($"EXCEPTION!! {e}", LogLevel.Error);
+				}
 			}
+			P.Log(NetworkManager.Singleton.NetworkConfig.Prefabs);
+
 		}
 
 		// if you ever add any event managers make sure to patch StartOfRound.Awake() to spawn them https://github.com/OE100/LuckyDice/blob/master/LuckyDice/Patches/NetworkStuffPatch.cs
+		
 
 		internal static void Patch()
 		{
 			Collect();
 			On.GameNetworkManager.Start += GameNetworkManager_Start;
-
-			var types = Assembly.GetExecutingAssembly().GetTypes();
-			foreach (var type in types)
+			try
 			{
-				var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-				foreach (var method in methods)
+				var types = Assembly.GetExecutingAssembly().GetTypes();
+				foreach (var type in types)
 				{
-					var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
-					if (attributes.Length > 0)
+					var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+					foreach (var method in methods)
 					{
-						method.Invoke(null, null);
+						var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
+						if (attributes.Length > 0)
+						{
+							method.Invoke(null, null);
+						}
 					}
 				}
 			}
+			catch(Exception e)
+			{
+				P.Log($"EXCEPTION!! {e}", LogLevel.Error);
+			}
 		}
+
+		
 	}
 }

@@ -34,7 +34,6 @@ Material:
   - _ENABLE_FOG_ON_TRANSPARENT
   - _MATERIAL_FEATURE_TRANSMISSION
   - _NORMALMAP_TANGENT_SPACE
-  - _REFRACTION_THIN
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -231,7 +230,7 @@ Material:
     - _RayTracing: 0
     - _ReceivesSSR: 1
     - _ReceivesSSRTransparent: 0
-    - _RefractionModel: 3
+    - _RefractionModel: 0
     - _Smoothness: 0.625
     - _SmoothnessRemapMax: 1
     - _SmoothnessRemapMin: 0
@@ -275,9 +274,9 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 1, g: 0.86274517, b: 0.5058824, a: 0.1}
+    - _BaseColor: {r: 1, g: 0.8676625, b: 0.52358484, a: 0.1254902}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 0.86274517, b: 0.5058824, a: 0.1}
+    - _Color: {r: 1, g: 0.8676625, b: 0.52358484, a: 0.1254902}
     - _DiffusionProfileAsset: {r: -0.00050902617, g: 8.385614e+31, b: 24.475449, a: 1.9085691e+28}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}

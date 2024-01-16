@@ -284,12 +284,14 @@ MonoBehaviour:
   radarIcon: {fileID: 0}
   reachedFloorTarget: 0
   grabbableToEnemies: 1
+  willExplode: 0
   exploded: 0
   sendingExplodeRPC: 0
   barrelAudio: {fileID: -54981506928310278}
   barrelFarAudio: {fileID: 278988278053559986}
   barrelBlast: {fileID: 8300000, guid: 98f310ea63b99df41816d12a965667c6, type: 3}
-  barrelHit: {fileID: 8300000, guid: 6ebd28bee5b1b844a8e69aa6d534a7d6, type: 3}
+  dropSFX: {fileID: 8300000, guid: 36caf03b5d6d3aa4c9728c3659486992, type: 3}
+  intenseSFX: {fileID: 8300000, guid: 6ebd28bee5b1b844a8e69aa6d534a7d6, type: 3}
 --- !u!114 &3775350421736090195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,7 +311,7 @@ MonoBehaviour:
   SceneMigrationSynchronization: 1
   SpawnWithObservers: 1
   DontDestroyWithOwner: 1
-  AutoObjectParentSync: 1
+  AutoObjectParentSync: 0
 --- !u!82 &-54981506928310278
 AudioSource:
   m_ObjectHideFlags: 0
