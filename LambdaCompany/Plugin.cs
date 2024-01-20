@@ -29,7 +29,6 @@ namespace LambdaCompany
 			Logger.LogInfo($"Plugin {GeneratedPluginInfo.Identifier} is loaded!");
 		}
 
-
 		private void Scrap()
 		{
 			ScrapPatcher.scrapCatelog.Add("GnomeScrap", new ScrapEntry("Assets/Scrap/Gnome/GnomeScrap.asset", 15, ScrapPatcher._easyBlacklist));
@@ -38,25 +37,6 @@ namespace LambdaCompany
 			ScrapPatcher.scrapCatelog.Add("ExplosiveBarrelScrap", new ScrapEntry("Assets/Scrap/ExplosiveBarrel/ExplosiveBarrelScrap.asset", 10, null));
 
 			ScrapPatcher.Activate();
-		}
-
-		public static bool SpawnInItem(string itemname = "GinoScrap", int value = 999)
-		{
-			Item? item = ScrapPatcher.GetEntry(itemname).item;
-			if (item == null) { return false; }
-			var position = StartOfRound.Instance.allPlayerScripts[0].gameplayCamera.transform.position;
-			var obj = GameObject.Instantiate(item.spawnPrefab, position, Quaternion.identity, RoundManager.Instance.spawnedScrapContainer);
-			var netObject = obj.GetComponent<NetworkObject>();
-			var grabble = obj.GetComponent<GrabbableObject>();
-			grabble.transform.rotation = Quaternion.Euler(grabble.itemProperties.restingRotation);
-			grabble.fallTime = 0f;
-			if (value > 0) { grabble.SetScrapValue(value); }
-			netObject.Spawn();
-			if (item.isScrap)
-			{
-				RoundManager.Instance.SyncScrapValuesClientRpc([new NetworkObjectReference(netObject)], [value]);
-			}
-			return true;
 		}
 
 		[MethodImpl(MethodImplOptions.NoInlining)]

@@ -40,7 +40,6 @@ namespace LambdaCompany
 		}
 
 		// if you ever add any event managers make sure to patch StartOfRound.Awake() to spawn them https://github.com/OE100/LuckyDice/blob/master/LuckyDice/Patches/NetworkStuffPatch.cs
-		
 
 		internal static void Patch()
 		{
