@@ -39,7 +39,8 @@ namespace LambdaCompany
 				barrelAudio.PlayOneShot(intenseSFX, 1f);
 				WalkieTalkie.TransmitOneShotAudio(barrelAudio, intenseSFX);
 			}
-			SetOffServerRpc();
+			P.Log("Hit barrel with shovel, setting off.");
+			SetOffServerRpc(); //doing it this way has it called only once
 			return true;
 		}
 		
@@ -48,7 +49,7 @@ namespace LambdaCompany
 			base.OnHitGround();
 			if (exploded) return;
 			P.Log($"Fall distance = {distanceFallen}", BepInEx.Logging.LogLevel.Warning);
-			if (!base.IsOwner) return;
+			if (!base.IsOwner) return;	// owner = client that was holding the object, apparently
 			
 			bool willExplode = false;
 			bool safeDrop = false;
@@ -97,10 +98,12 @@ namespace LambdaCompany
 			exploded = true;
 			barrelAudio.PlayOneShot(barrelBlast, 1f);
 			WalkieTalkie.TransmitOneShotAudio(barrelAudio, barrelBlast);
-			if (base.IsOwner) RoundManager.Instance.PlayAudibleNoise(base.transform.position, 11f, 1f, 0, isInElevator && StartOfRound.Instance.hangarDoorsClosed, 941);
 			Landmine.SpawnExplosion(base.transform.position + Vector3.up, spawnExplosionEffect: true, 5f, 8f);
 			StunGrenadeItem.StunExplosion(base.transform.position + Vector3.up, true, 0.1f, 3.0f, 0.5f);
-			RemoveScrapServerRpc();
+			if (base.IsOwner) {
+				RoundManager.Instance.PlayAudibleNoise(base.transform.position, 11f, 1f, 0, isInElevator && StartOfRound.Instance.hangarDoorsClosed, 941);
+				RemoveScrapServerRpc();
+			}
 		}
 
 		[ServerRpc(RequireOwnership = false)]
@@ -110,6 +113,7 @@ namespace LambdaCompany
 			grabbableToEnemies = false;
 			deactivated = true;
 			//GameObject.Destroy(this.gameObject);
+			P.Log("Despawning barrel object.");
 			NetworkObject.Despawn(true); //apparently this is better?
 		}
 	}
