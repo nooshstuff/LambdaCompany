@@ -5,7 +5,7 @@
 		<PluginId>ca.noosh.lambdacompany</PluginId>
 		<!-- THUNDERSTORE -->
 		<Description>Half Life 2 based mod</Description>
-		<Version>0.0.5</Version>
+		<Version>0.0.7</Version>
 		<ThunderId>LambdaCompany</ThunderId>
 		<ThunderWebsiteUrl>https://github.com/nooshstuff/LambdaCompany</ThunderWebsiteUrl>
 		<!-- MISC -->
@@ -41,10 +41,15 @@
 
 	<Target Name="IncludeBundle" BeforeTargets="PreBuildEvent" Condition="true">
 		<MakeDir Directories="$(TargetDir)publish" Condition="!Exists('$(TargetDir)publish')" />
+		<Exec Command="cp $(SolutionDir)AssetBundles/lambdacompany $(TargetDir)" />
 		<Exec Command="cp $(SolutionDir)AssetBundles/lambdacompany $(TargetDir)publish/" />
 	</Target>
 
 	<Target Name="NetcodePatch" AfterTargets="PostBuildEvent">
 		<Exec Command="netcode-patch &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')" />
-	</Target>  
+	</Target>
+
+	<Target Name="CopyToUnity" AfterTargets="NetcodePatch" Condition="true">
+		<Exec Command="cp -r $(TargetDir)LambdaCompany.dll $(SolutionDir)UnityProject/Assets/Plugins/" />
+	</Target>
 </Project>

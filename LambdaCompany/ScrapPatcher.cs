@@ -1,14 +1,17 @@
-﻿namespace LambdaCompany
+﻿using UnityEngine.Audio;
+using UnityEngine;
+
+namespace LambdaCompany
 {
 	public static class ScrapPatcher
 	{
 		internal static Dictionary<string, ScrapEntry> scrapCatelog = new Dictionary<string, ScrapEntry>();
 		internal static List<string> _easyBlacklist = ["ExperimentationLevel", "AssuranceLevel", "VowLevel"];
+
 		public static void Activate()
 		{
 			//Activate Patches for Scrap Items
 			On.StartOfRound.Awake += StartOfRound_Awake;
-			// TODO: fix audio mixer groups https://github.com/EvaisaDev/LethalLib/blob/main/LethalLib/Modules/Utilities.cs maybe?
 		}
 
 		public static ScrapEntry GetEntry(string item)

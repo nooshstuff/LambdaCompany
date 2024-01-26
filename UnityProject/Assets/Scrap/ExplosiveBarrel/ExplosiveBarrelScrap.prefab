@@ -41,7 +41,8 @@ AudioSource:
   m_GameObject: {fileID: 2857652962338618509}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300008, guid: 94a7415a1fea79c45be65e3aaa323a6a,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
@@ -284,7 +285,6 @@ MonoBehaviour:
   radarIcon: {fileID: 0}
   reachedFloorTarget: 0
   grabbableToEnemies: 1
-  willExplode: 0
   exploded: 0
   sendingExplodeRPC: 0
   barrelAudio: {fileID: -54981506928310278}
@@ -321,7 +321,8 @@ AudioSource:
   m_GameObject: {fileID: 4874219053469324804}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300008, guid: 94a7415a1fea79c45be65e3aaa323a6a,
+    type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1

@@ -6,9 +6,7 @@ namespace LambdaCompany
 {
 	public class ExplosiveBarrel : GrabbableObject, IHittable
 	{
-		public bool willExplode;
 		public bool exploded;
-		public bool sendingExplodeRPC;
 
 		public AudioSource barrelAudio;
 		public AudioSource barrelFarAudio;
@@ -25,16 +23,14 @@ namespace LambdaCompany
 			}
 		}
 
-		//[HideInInspector]
-		//private static float explodeChance = 1f / 3;
+		[HideInInspector]
+		internal static float explodeChance = 1f / 3;
 
-		/*
 		public override void Start()
 		{
 			base.Start();
 			explodeChance = P.explodeChance.Value;
 		}
-		*/
 
 		bool IHittable.Hit(int force, Vector3 hitDirection, PlayerControllerB playerWhoHit, bool playHitSFX) // playerWhoHit = null, playHitSFX = false
 		{
@@ -43,81 +39,67 @@ namespace LambdaCompany
 				barrelAudio.PlayOneShot(intenseSFX, 1f);
 				WalkieTalkie.TransmitOneShotAudio(barrelAudio, intenseSFX);
 			}
-			SetOffLocally();
+			SetOffServerRpc();
 			return true;
 		}
 		
 		public override void OnHitGround()
 		{
 			base.OnHitGround();
-			if (exploded || sendingExplodeRPC) return;
+			if (exploded) return;
 			P.Log($"Fall distance = {distanceFallen}", BepInEx.Logging.LogLevel.Warning);
+			if (!base.IsOwner) return;
 			
-			AudioClip soundToPlay;
+			bool willExplode = false;
+			bool safeDrop = false;
 			switch (distanceFallen)
 			{
 				case > 2f:
 					willExplode = true;
-					soundToPlay = intenseSFX;
 					P.Log("Setting off guarunteed barrel explosion!");
 					break;
 				case > 1f:
-					//willExplode = rng.NextDouble() <= explodeChance;
-					willExplode = true;
-					soundToPlay = intenseSFX;
+					willExplode = UnityEngine.Random.Range(0f, 1f) <= explodeChance; //does doing a random check on the server rpc work better
 					P.Log((willExplode ? "Setting off explosion due to failed roll!" : "Barrel explosion avoided!"));
 					break;
 				default:
-					willExplode = false;
-					soundToPlay = dropSFX;
+					safeDrop = true;
 					P.Log("Barrel not exploding, drop too short.");
 					break;
 			}
-			if (soundToPlay != null)
-			{
-				base.gameObject.GetComponent<AudioSource>().PlayOneShot(soundToPlay);
-				if (base.IsOwner)
-				{
-					RoundManager.Instance.PlayAudibleNoise(base.transform.position, 8f + distanceFallen, 0.5f, 0, isInElevator && StartOfRound.Instance.hangarDoorsClosed, 941);
-				}
+			if (StartOfRound.Instance.inShipPhase) willExplode = false;
+			if (willExplode) {
+				if (!exploded) SetOffServerRpc();
 			}
-			if (willExplode) SetOffLocally();
-		}
+			else {
+				DropSoundServerRPC(safeDrop); }
+			}
 
-		public void SetOffLocally()
+		[ServerRpc(RequireOwnership = false)]
+		public void DropSoundServerRPC(bool safeDrop) { DropSoundClientRPC(safeDrop); }
+
+		[ClientRpc]
+		public void DropSoundClientRPC(bool safeDrop)
 		{
-			if (!exploded)
-			{
-				Detonate();
-				sendingExplodeRPC = true;
-				SetOffServerRpc();
-			}
+			barrelAudio.PlayOneShot((safeDrop ? dropSFX : intenseSFX));
+			WalkieTalkie.TransmitOneShotAudio(barrelAudio, (safeDrop ? dropSFX : intenseSFX));
+			if (base.IsOwner) RoundManager.Instance.PlayAudibleNoise(base.transform.position, 8f + distanceFallen, 0.5f, 0, isInElevator && StartOfRound.Instance.hangarDoorsClosed, 941);
 		}
 
 		[ServerRpc(RequireOwnership = false)]
-		public void SetOffServerRpc()
-		{
-			SetOffClientRpc();
-		}
+		public void SetOffServerRpc() { SetOffClientRpc(); }
 
 		[ClientRpc]
-		public void SetOffClientRpc()
-		{
-			if (sendingExplodeRPC) { sendingExplodeRPC = false; }
-			else { Detonate(); }
-		}
+		public void SetOffClientRpc() { Detonate(); }
 
 		public void Detonate()
 		{
 			exploded = true;
 			barrelAudio.PlayOneShot(barrelBlast, 1f);
 			WalkieTalkie.TransmitOneShotAudio(barrelAudio, barrelBlast);
-			try
-			{
-				Landmine.SpawnExplosion(base.transform.position + Vector3.up, spawnExplosionEffect: true, 5f, 8f);
-				StunGrenadeItem.StunExplosion(base.transform.position + Vector3.up, true, 0.1f, 3.0f, 0.5f);
-			}
-			catch (Exception e) { P.Log($"EXCEPTION!! {e}"); }
+			if (base.IsOwner) RoundManager.Instance.PlayAudibleNoise(base.transform.position, 11f, 1f, 0, isInElevator && StartOfRound.Instance.hangarDoorsClosed, 941);
+			Landmine.SpawnExplosion(base.transform.position + Vector3.up, spawnExplosionEffect: true, 5f, 8f);
+			StunGrenadeItem.StunExplosion(base.transform.position + Vector3.up, true, 0.1f, 3.0f, 0.5f);
 			RemoveScrapServerRpc();
 		}
 
@@ -127,7 +109,8 @@ namespace LambdaCompany
 			grabbable = false;
 			grabbableToEnemies = false;
 			deactivated = true;
-			GameObject.Destroy(this.gameObject);
+			//GameObject.Destroy(this.gameObject);
+			NetworkObject.Despawn(true); //apparently this is better?
 		}
 	}
 }
