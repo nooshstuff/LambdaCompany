@@ -1,12 +1,14 @@
 ﻿using UnityEngine.Audio;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
+using System.Reflection;
 
 namespace LambdaCompany
 {
 	public static class ScrapPatcher
 	{
 		internal static Dictionary<string, ScrapEntry> scrapCatelog = new Dictionary<string, ScrapEntry>();
-		internal static List<string> _easyBlacklist = ["ExperimentationLevel", "AssuranceLevel", "VowLevel"];
 
 		public static void Activate()
 		{
@@ -27,10 +29,18 @@ namespace LambdaCompany
 				foreach (ScrapEntry scrap in scrapCatelog.Values)
 				{
 					if (level.spawnableScrap.Any(x => x.spawnableItem == scrap.item)) continue;
-					if (scrap.levelBlacklist != null) {
-						if (scrap.levelBlacklist.Contains(level.name)) continue;
+					int index = MoonIndex.GetValueOrDefault(level.name, -9);
+					if (index == -9) { switch (level.maxScrap) {
+							case >= 30:
+								index = MoonIndex["ModdedLevel30"]; break;
+							case >= 15:
+								index = MoonIndex["ModdedLevel15"]; break;
+							default:
+								index = MoonIndex["ModdedLevel"];	break;
+						}
 					}
-					level.spawnableScrap.Add(new SpawnableItemWithRarity() { spawnableItem = scrap.item, rarity = scrap.rarity });
+					if (scrap.rarity[index] == -1) continue;
+					level.spawnableScrap.Add(new SpawnableItemWithRarity() { spawnableItem = scrap.item, rarity = scrap.rarity[index] });
 				}
 			}
 
@@ -78,6 +88,23 @@ namespace LambdaCompany
 		private static void MenuManager_Start(On.MenuManager.orig_Start orig, MenuManager self)
 		{
 			orig(self);
+			//Diffusion Profile
+			PropertyInfo a = typeof(HDRenderPipeline).GetProperty("currentPipeline", BindingFlags.Static | BindingFlags.NonPublic);
+			HDRenderPipeline currentPipeline = (HDRenderPipeline)a.GetValue(typeof(HDRenderPipeline));
+			PropertyInfo b = currentPipeline.GetType().GetProperty("defaultDiffusionProfile", BindingFlags.Instance | BindingFlags.NonPublic);
+			DiffusionProfileSettings defaultProfileSettings = (DiffusionProfileSettings)b.GetValue(currentPipeline);
+			defaultProfileSettings.scatteringDistance = new Color(0.5f, 0.5f, 0.5f, 1f);
+			FieldInfo c = defaultProfileSettings.GetType().GetField("profile", BindingFlags.Instance | BindingFlags.NonPublic);
+			var defaultProfile = c.GetValue(defaultProfileSettings);
+			defaultProfile.GetType().GetField("scatteringDistanceMultiplier").SetValue(defaultProfile, 1f);
+			defaultProfile.GetType().GetField("transmissionTint").SetValue(defaultProfile, new Color(1f, 1f, 1f, 1f));
+			defaultProfile.GetType().GetField("texturingMode").SetValue(defaultProfile, 1u);
+			defaultProfile.GetType().GetField("transmissionMode").SetValue(defaultProfile, 1u);
+			defaultProfile.GetType().GetField("thicknessRemap").SetValue(defaultProfile, new Vector2(0f, 5f));
+			defaultProfile.GetType().GetField("worldScale").SetValue(defaultProfile, 1f);
+			defaultProfile.GetType().GetField("ior").SetValue(defaultProfile, 1.8f);
+			P.Log("Patched the default diffusion profile!");
+
 			if (self.GetComponent<AudioSource>() == null) return;
 			AudioMixer audioMixer = self.GetComponent<AudioSource>().outputAudioMixerGroup.audioMixer;
 			List<GameObject> prefabsToRemove = new List<GameObject>();
@@ -111,19 +138,35 @@ namespace LambdaCompany
 			fixedPrefabs.Add(prefab);
 			prefabsToFix.Add(prefab);
 		}
+
+		internal static Dictionary<string, int> MoonIndex = new Dictionary<string, int>()
+		{
+			{"ExperimentationLevel", 0},
+			{"AssuranceLevel", 1},
+			{"VowLevel", 2},
+
+			{"OffenseLevel", 3},
+			{"MarchLevel", 4},
+
+			{"RendLevel", 5},
+			{"DineLevel", 6},
+			{"TitanLevel", 7},
+
+			{"ModdedLevel", 8},
+			{"ModdedLevel15", 9},
+			{"ModdedLevel30", 10}
+		};
 	}
 
 	public struct ScrapEntry
 	{
-		public ScrapEntry(string assetpath, int rarity, List<string>? levels) : this()
+		public ScrapEntry(string assetpath, int[] rarity) : this()
 		{
 			item = P.assets.LoadAsset<Item>(assetpath);
 			this.rarity = rarity;
-			this.levelBlacklist = levels;
 			ScrapPatcher.FixMixerGroups(item.spawnPrefab);
 		}
 		internal Item item;
-		internal int rarity;
-		internal List<string>? levelBlacklist;
+		internal int[] rarity;
 	}
 }

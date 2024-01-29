@@ -50,7 +50,8 @@ MonoBehaviour:
   syncInteractLRFunction: 0
   saveItemVariable: 0
   isDefensiveWeapon: 0
-  toolTips: []
+  toolTips:
+  - 'Drop carefully!: [Ctrl]'
   verticalOffset: 0
   floorYOffset: 0
   allowDroppingAheadOfPlayer: 1

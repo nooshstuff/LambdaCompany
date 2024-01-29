@@ -4,8 +4,8 @@
 		<Title>Lambda Company</Title>
 		<PluginId>ca.noosh.lambdacompany</PluginId>
 		<!-- THUNDERSTORE -->
-		<Description>Half Life 2 based mod</Description>
-		<Version>0.0.7</Version>
+		<Description>A mod that adds scrap and items and various other things from Half Life 2 and other source games!</Description>
+		<Version>1.0.0</Version>
 		<ThunderId>LambdaCompany</ThunderId>
 		<ThunderWebsiteUrl>https://github.com/nooshstuff/LambdaCompany</ThunderWebsiteUrl>
 		<!-- MISC -->
@@ -43,6 +43,12 @@
 		<MakeDir Directories="$(TargetDir)publish" Condition="!Exists('$(TargetDir)publish')" />
 		<Exec Command="cp $(SolutionDir)AssetBundles/lambdacompany $(TargetDir)" />
 		<Exec Command="cp $(SolutionDir)AssetBundles/lambdacompany $(TargetDir)publish/" />
+	</Target>
+
+	<Target Name="IncludeChangelog" BeforeTargets="PreBuildEvent" Condition="true">
+		<MakeDir Directories="$(TargetDir)publish" Condition="!Exists('$(TargetDir)publish')" />
+		<Exec Command="cp $(SolutionDir)CHANGELOG.md $(TargetDir)" />
+		<Exec Command="cp $(SolutionDir)CHANGELOG.md $(TargetDir)publish/" />
 	</Target>
 
 	<Target Name="NetcodePatch" AfterTargets="PostBuildEvent">

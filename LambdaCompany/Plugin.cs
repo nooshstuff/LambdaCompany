@@ -31,10 +31,17 @@ namespace LambdaCompany
 
 		private void Scrap()
 		{
-			ScrapPatcher.scrapCatelog.Add("GnomeScrap", new ScrapEntry("Assets/Scrap/Gnome/GnomeScrap.asset", 15, ScrapPatcher._easyBlacklist));
-			ScrapPatcher.scrapCatelog.Add("DollScrap", new ScrapEntry("Assets/Scrap/Doll/DollScrap.asset", 30, null));
-			ScrapPatcher.scrapCatelog.Add("LanternScrap", new ScrapEntry("Assets/Scrap/Lantern/LanternScrap.asset", 25, ScrapPatcher._easyBlacklist));
-			ScrapPatcher.scrapCatelog.Add("ExplosiveBarrelScrap", new ScrapEntry("Assets/Scrap/ExplosiveBarrel/ExplosiveBarrelScrap.asset", 10, null));
+			Dictionary<string, int[]> rarityMap = new Dictionary<string, int[]> {
+				{ "GnomeScrap",				[2, 5, 4,		4, 1,		1, 10, 15,		1, 15, 20] },
+				{ "DollScrap",				[30, 10, 10,	-1, -1,		25, 60, -1,		10, 50, 15] },
+				{ "LanternScrap",			[-1, -1, -1,	12, 12,		20, 15, 15,		5, 15, 30] },
+				{ "ExplosiveBarrelScrap",	[10, 18, -1,	25, -1,		8, -1, 30,		15, 12, 28	] }
+			};
+
+			ScrapPatcher.scrapCatelog.Add("GnomeScrap", new ScrapEntry("Assets/Scrap/Gnome/GnomeScrap.asset", rarityMap["GnomeScrap"]));
+			ScrapPatcher.scrapCatelog.Add("DollScrap", new ScrapEntry("Assets/Scrap/Doll/DollScrap.asset", rarityMap["DollScrap"]));
+			ScrapPatcher.scrapCatelog.Add("LanternScrap", new ScrapEntry("Assets/Scrap/Lantern/LanternScrap.asset", rarityMap["LanternScrap"]));
+			ScrapPatcher.scrapCatelog.Add("ExplosiveBarrelScrap", new ScrapEntry("Assets/Scrap/ExplosiveBarrel/ExplosiveBarrelScrap.asset", rarityMap["ExplosiveBarrelScrap"]));
 
 			ScrapPatcher.Activate();
 		}
